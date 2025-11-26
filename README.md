@@ -31,7 +31,6 @@
 * **bssid**: AP의 MAC 주소 (AP 고유 식별자).
 * **rssi**: 수신 신호 강도 (AP의 세기).
 * **i_rtt_sec**: Initial RTT (초기 왕복 시간).
-* **rtt_continuous_sec**: 연속 RTT (연결 유지 중 왕복 시간).
 * **dns_query**: DNS 서버에 요청한 웹 도메인 주소.
 * **tls_version**: TLS/SSL 암호화 버전.
 * **tcp_flags**: TCP 통신 상태 플래그 (SYN, ACK, PSH 등의 상태).
@@ -40,7 +39,7 @@
 
 ---
 
-## 5. 공격 탐지 기준 (Anomaly Guide)
+## 5. 예상 공격 탐지 기준 (출처:Gemini)
 
 * **BSSID:** 동일 SSID에 대해 평소와 다른 BSSID가 관찰될 때.
     [공격 시나리오] Evil Twin 확정. 가장 확실한 공격 징후입니다.
