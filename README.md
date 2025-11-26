@@ -41,7 +41,7 @@
 * **rtt_continuous_sec**: 연속 RTT (연결 유지 중 왕복 시간).
 * **dns_query**: DNS 서버에 요청한 웹 도메인 주소.
 * **tls_version**: TLS/SSL 암호화 버전.
-*(dns_query와 tls_version은 보통 N/A로 나오는데, 값이 한번이라도 나오면 분석해볼 필요가 있는 패킷일 것으로 예상됨).
+**(dns_query와 tls_version은 보통 N/A로 나오는데, 값이 한번이라도 나오면 분석해볼 필요가 있는 패킷일 것으로 예상됨).
 ---
 
 ## 5. 예상 공격 탐지 기준 (출처:Gemini)
