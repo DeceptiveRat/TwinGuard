@@ -16,18 +16,15 @@ OUTPUT_FILE = 'evil_twin_dataset.json' # 저장할 최종 파일명
 MAX_WAIT = 10           # 위치 권한 대기 시간(초)
 
 def get_wifi_context():
-    """
-    CoreLocation으로 권한을 획득하고, CoreWLAN으로 정확한 Wi-Fi 정보를 가져옵니다.
-    """
+
     wifi_data = {
         "ssid": "Unknown",
         "bssid": "Unknown",
         "rssi": None, 
-        "wifi_status": "ERROR_INIT"
     }
 
     try:
-        # 1. 권한 요청 (팝업 발생 유도)
+        # 1. 권한 요청
         location_manager = CLLocationManager.alloc().init()
         location_manager.requestWhenInUseAuthorization()
         location_manager.startUpdatingLocation() # 위치 정보 업데이트 시작
@@ -37,23 +34,22 @@ def get_wifi_context():
         iface = client.interface()
 
         if iface:
-            # 3. 정보 추출 (권한이 부여되어야 SSID/BSSID가 나옵니다)
+            # 3. 정보 추출
             wifi_data["ssid"] = iface.ssid() or "Hidden"
             wifi_data["bssid"] = iface.bssid() or "None"
             wifi_data["rssi"] = int(iface.rssiValue())
-            wifi_data["wifi_status"] = "OK"
-        else:
-            wifi_data["wifi_status"] = "ERROR_NO_INTERFACE"
+            # wifi_data["wifi_status"] = "OK" 로직 제거됨
+        # else:
+            # wifi_data["wifi_status"] = "ERROR_NO_INTERFACE" 로직 제거됨
 
     except Exception as e:
-        wifi_data["wifi_status"] = f"ERROR: {e.__class__.__name__}"
+        # 오류가 발생하면, "ssid"와 "bssid"가 "Unknown"이나 "None"으로 남아있게 됩니다.
+        pass
         
     return wifi_data
 
 def capture_and_merge(wifi_info):
-    """
-    Wi-Fi 정보를 기반으로 패킷을 캡처하고 데이터를 병합합니다.
-    """
+
     print(f"[{datetime.now().strftime('%H:%M:%S')}] 🚀 패킷 {PACKET_COUNT}개 수집 시작...")
 
     extracted_list = []
@@ -77,7 +73,7 @@ def capture_and_merge(wifi_info):
             data['dst_port'] = "N/A"
             data['tcp_flags'] = "N/A"
             data['i_rtt_sec'] = None
-            data['rtt_continuous_sec'] = None # <--- 연속 RTT 초기화
+            data['rtt_continuous_sec'] = None 
             data['dns_query'] = "N/A"
             data['tls_version'] = "N/A"
 
@@ -85,7 +81,7 @@ def capture_and_merge(wifi_info):
             if 'IP' in packet:
                 data['src_ip'] = packet.ip.src
                 data['dst_ip'] = packet.ip.dst
-                data['protocol_type'] = packet.ip.proto # 6:TCP, 17:UDP
+                data['protocol_type'] = packet.ip.proto 
 
                 # TCP 분석 (iRTT, Continuous RTT 포함)
                 if 'TCP' in packet:
@@ -130,7 +126,7 @@ def capture_and_merge(wifi_info):
 
 if __name__ == "__main__":
     
-    # 1. Wi-Fi 정보 가져오기 (권한 팝업 유도)
+    # 1. Wi-Fi 정보 가져오기
     current_wifi = get_wifi_context()
 
     print(f"\n[{datetime.now().strftime('%H:%M:%S')}] 📡 현재 AP 상태:")
