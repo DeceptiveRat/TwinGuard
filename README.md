@@ -30,12 +30,18 @@
 * **ssid**: Wi-Fi 네트워크 이름.
 * **bssid**: AP의 MAC 주소 (AP 고유 식별자).
 * **rssi**: 수신 신호 강도 (AP의 세기).
+* **wifi_status**: Wi-Fi 정보 수집 성공 여부.
+* **frame_number**: 캡처된 패킷의 순서 번호.
+* **packet_timestamp**: 패킷이 캡처된 시간 (유닉스 타임스탬프).
+* **src_ip / dst_ip**: 출발지 및 목적지 IP 주소.
+* **src_port / dst_port**: 출발지 및 목적지 포트 번호.
+* **protocol_type**: IP 레이어의 프로토콜 번호 (예: 6=TCP, 17=UDP).
+* **protocol**: 상위 프로토콜 이름 (TCP, UDP, DNS 등).
+* **tcp_flags**: TCP 통신 상태 플래그 (SYN, ACK, PSH 등의 상태).
 * **i_rtt_sec**: Initial RTT (초기 왕복 시간).
+* **rtt_continuous_sec**: 연속 RTT (연결 유지 중 왕복 시간).
 * **dns_query**: DNS 서버에 요청한 웹 도메인 주소.
 * **tls_version**: TLS/SSL 암호화 버전.
-* **tcp_flags**: TCP 통신 상태 플래그 (SYN, ACK, PSH 등의 상태).
-* **src_ip / dst_ip**: 출발지 및 목적지 IP 주소.
-* **wifi_status**: Wi-Fi 정보 수집 성공 여부.
 
 ---
 
