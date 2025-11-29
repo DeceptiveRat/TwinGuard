@@ -17,9 +17,6 @@
 
 ## 3. 코드 구조 및 역할
 
-* **get_wifi_context()**: CoreLocation 권한 요청 후 CoreWLAN으로 RSSI, BSSID, SSID 등 Wi-Fi 환경 정보를 수집합니다.
-* **capture_and_merge()**: Pyshark로 실시간 IP 패킷을 캡처하고, 캡처된 모든 패킷에 Wi-Fi 정보를 병합하여 데이터셋을 완성합니다.
-* **if __name__ == "__main__":**: 두 함수를 호출하여 데이터를 수집하고, 최종적으로 JSON 파일로 저장합니다. **(실행 시 반드시 sudo 권한 필요)**
 
 ---
 
