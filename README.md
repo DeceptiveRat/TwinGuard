@@ -24,7 +24,21 @@
 ---
 
 ## 4. 추출 데이터 필드 정의
-
+(예시)
+        "id": 5,
+        "timestamp": 1764422058.941997,
+        "protocol": "TCP",
+        "length": 54,
+        "src_ip": "51.116.253.170",
+        "dst_ip": "192.168.0.33",
+        "src_mac": "70:5d:cc:9d:cb:53",
+        "dst_mac": "5c:b4:7e:17:9d:8c",
+        "src_port": 443,
+        "dst_port": 62517,
+        "tcp_flags": "0x0010",
+        "i_rtt": 0.268209,
+        "ack_rtt": 0.218069,
+        "dns_query": "N/A"
 * **ssid**: Wi-Fi 네트워크 이름.
 * **bssid**: AP의 MAC 주소 (AP 고유 식별자).
 * **rssi**: 수신 신호 강도 (AP의 세기).
