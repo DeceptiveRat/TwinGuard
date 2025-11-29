@@ -8,13 +8,10 @@
 
 ---
 
-## 2. 필수 라이브러리 및 설치 (Requirements)
+## 2. 필수 라이브러리 및 설치 (VScode와 python, pip 등은 기본적으로 깔려있다고 가정하겠습니다) 
 
-* **WireShark:** 인터넷에서 다운해야됨 -> 여기에서 Tshark(터미널 기반 패킷 처리)가 자연스럽게 다운받아짐 
-* **Pyshark:** 실시간 패킷 캡처 및 분석 (TShark 필요). - 이것은 VS코드 내에서 다운하면 됨
-* **PyObjC 프레임워크:** macOS 네이티브 Wi-Fi 정보 접근 및 권한 요청 처리.
-* **설치 명령어:**
-    pip3 install pyshark pyobjc pyobjc-framework-CoreWLAN pyobjc-framework-CoreLocation
+* **1.WireShark:** 인터넷에서 다운해야됨 -> 여기에서 Tshark(터미널 기반 패킷 처리)가 자연스럽게 다운받아짐 
+* **2.Pyshark:** python에서 사용하는 패킷 캡처 및 분석 라이브러리(Tshark에서 가져오는 데이터) - pip install pyshark
 
 ---
 
