@@ -29,7 +29,7 @@
 * **src_ip / dst_ip**:
 * **src_mac / dst_mac**:
 * * **src_port / dst_port**:
-* **tcp_flags**: TCP 통신 상태 플래그 (SYN, ACK, PSH 등의 상태).
+* **tcp_flags**: TCP 통신 상태 플래그 (ACK(0x0010):수신 확인, SYN(0x0002):새로운 TCP연결 시작, FIN(0x0001):연결 정상 종료)
 * **i_rtt_sec**: Initial RTT (초기 왕복 시간).
 * **rtt_continuous_sec**: 연속 RTT (연결 유지 중 왕복 시간).
 * **dns_query**: DNS 서버에 요청한 웹 도메인 주소.
