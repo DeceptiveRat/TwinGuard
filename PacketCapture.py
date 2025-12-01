@@ -23,7 +23,8 @@ if sys.platform == 'win32':
 INTERFACE = 'Wi-Fi'
 BATCH_SIZE = 1
 OUTPUT_FILE = 'Packet_data.json' 
-SLEEP_TIME = 0.2
+SLEEP_TIME = 0.1
+DISPLAY_FILTER = "tcp || udp"
 
 #소켓
 TARGET_IP = '127.0.0.1'  
@@ -35,9 +36,11 @@ def usage():
 	print("-h: display this help screen")
 	print("-o <output file>: set name of output file. Default: Packet_data.json")
 	print("-i <interface>: set interface. Default: Wi-Fi")
+	print("-t: set display filter to only TCP")
+	print("-u: set display filter to only UDP")
 
 try:
-	opts, args = getopt.getopt(sys.argv[1:], "ho:i:")
+	opts, args = getopt.getopt(sys.argv[1:], "ho:i:tu")
 except getopt.GetoptError as err:
 	print(err)
 	usage()
@@ -51,6 +54,10 @@ for option, argument in opts:
 		OUTPUT_FILE = argument 
 	elif option == "-i":
 		INTERFACE = argument
+	elif option == "-t":
+		DISPLAY_FILTER="tcp"
+	elif option == "-u":
+		DISPLAY_FILTER="udp"
 	else:
 		assert False, "unhandled option"
 
@@ -136,7 +143,7 @@ print("-"*40)
 
 try:
 	sock = create_socket()
-	capture = pyshark.LiveCapture(interface=INTERFACE, display_filter="tcp || udp")
+	capture = pyshark.LiveCapture(interface=INTERFACE, display_filter=DISPLAY_FILTER)
 	packet_batch = []
 	current_wifi = get_wifi_info()
 
