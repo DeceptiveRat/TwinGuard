@@ -38,7 +38,6 @@ try:
 		BSSID = parsed_data['ap_bssid']
 		i_rtt = parsed_data['i_rtt']
 		rtt = parsed_data['ack_rtt']
-		print(type(SSID_dictionary[SSID]))
 
 		# new SSID
 		if SSID not in SSID_dictionary.keys():
