@@ -28,8 +28,8 @@ TwinGuard visualizes invisible network threats through a **3-stage pipeline**. I
 ## Getting Started
 
 # Prerequisites
-The following tools are required for network packet analysis:
--Python 3.x (⚠️ Ensure Add to PATH is checked during installation).
--Wireshark - Crucial: You must select Install TShark and Install Npcap during the installation process.
--Python Libraries Run the following command in your terminal:
+The following tools are required for network packet analysis: 
+-Python 3.x (⚠️ Ensure Add to PATH is checked during installation). 
+-Wireshark - Crucial: You must select Install TShark and Install Npcap during the installation process. 
+-Python Libraries Run the following command in your terminal: 
 pip install pyshark
