@@ -60,7 +60,7 @@ def socket_listen(socket):
 				print("Suspicious change detected.")
 			elif alert_level == "HIGH":
 				print("Attack detected!")
-			print("Score: " + loaded_data['score'])
+			print("Score: ", loaded_data['score'])
 
 			# advise action based on cause
 			if loaded_data['new_BSSID'] == True:

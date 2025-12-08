@@ -1,9 +1,9 @@
 #include <WiFi.h>
 #include <DNSServer.h>
 
-const char* ssid = "public wifi";
-const char* password = "12345678";
-const char* test_ssid = "ESP32";
+const char* ssid = "wifi";
+const char* password = "123456789";
+const char* test_ssid = "wifi";
 const char* test_password = "12345678";
 
 WiFiServer server(80);
@@ -14,9 +14,17 @@ WiFiClient victim;
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
+const int buttonPin = 23;
+
 void setup() {
   Serial.begin(115200);
-
+  pinMode(buttonPin, INPUT_PULLUP);
+  // Wait until button is pressed
+  Serial.println("Waiting for button...");
+  while (digitalRead(buttonPin) == HIGH) {
+    delay(10);
+  }
+  
   // disconnect to clear previous configuration
   WiFi.softAPdisconnect(true); 
   
@@ -108,20 +116,25 @@ void loop() {
     }
   }
   
+  // 4. The Pipeline (Streaming Data)
+  // Read from Web -> Write to Victim immediately
   unsigned long lastActivity = millis();
       
   while (webhost.connected() || webhost.available()) {
     if (webhost.available()) {
+      // Read a chunk (buffer) instead of a char
       uint8_t buffer[128];
       int len = webhost.read(buffer, sizeof(buffer));
       if (len > 0) {
       // Forward directly to victim
       victim.write(buffer, len);
-      //Serial.write(buffer, len); 
+      // Optional: Print to serial to debug (slows things down though)
+      Serial.write(buffer, len); 
       lastActivity = millis();
       }
     }
         
+    // Timeout safety
     if (millis() - lastActivity > 10000) {
       Serial.println("Transfer timed out");
       break;
