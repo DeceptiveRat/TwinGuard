@@ -25,7 +25,7 @@ TwinGuard visualizes invisible network threats through a **3-stage pipeline**. I
 3. 위험도 탐지,Detector (AnomalyDetector.py),"Port 5002에서 분석 데이터를 수신합니다. 학습된 **정상 범위(Baseline)**를 기준으로 RSSI, RTT, BSSID 변경 등의 항목에 **벌점(Score)**을 매기고, 위험 등급(NORMAL, SUSPICIOUS, HIGH)을 결정하여 Port 5003으로 보냅니다."
 4. 결과 표시,UI (win_ui.py),Port 5003에서 최종 탐지 결과를 수신하여 사용자에게 실시간으로 출력합니다.
 
-## Getting Started
+---
 
 ## 3. ⚙️ 필수 준비 사항 (Prerequisites)
 ### 💻 필수 설치 도구
