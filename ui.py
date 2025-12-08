@@ -62,7 +62,7 @@ detector_log = open("detector.log", "w")
 
 print("Starting subprocesses...")
 # create subprocesses
-preprocess_ans = subprocess.Popen(["python3", "-u", "extract.py"], preexec_fn = preexec_fn, stdout=preprocessor_log, stderr=preprocessor_log)
+preprocess_ans = subprocess.Popen(["python3", "-u", "Preprocessor.py"], preexec_fn = preexec_fn, stdout=preprocessor_log, stderr=preprocessor_log)
 capture_ans = subprocess.Popen(["python3", "-u", "PacketCapture.py", "-i", INTERFACE], preexec_fn = preexec_fn, stdout=capturer_log, stderr=capturer_log)
 detector_ans = subprocess.Popen(["python3", "-u", "AnomalyDetector.py"], preexec_fn = preexec_fn, stdout=detector_log, stderr=detector_log)
 
