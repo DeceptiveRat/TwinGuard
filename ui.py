@@ -4,6 +4,7 @@ import signal
 import sys
 import socket
 import getopt
+import json
 
 # only Linux supported for now
 if sys.platform != 'linux':
@@ -49,7 +50,24 @@ def socket_listen(socket):
 	try:
 		while True:
 			data, addr = input_sock.recvfrom(1024)
-			print(data)
+			loaded_data = json.loads(data)
+			if loaded_data['status'] == "NORMAL":
+				continue
+			
+			# set alert level
+			alert_level = loaded_data['status']
+			if alert_level == "SUSPICIOUS":
+				print("Suspicious change detected.")
+			elif alert_level == "HIGH":
+				print("Attack detected!")
+			print("Score: " + loaded_data['score'])
+
+			# advise action based on cause
+			if loaded_data['new_BSSID'] == True:
+				print("New BSSID detected! Disconnect from AP immediately!")
+			elif loaded_data['RSSI'] >60:
+				print("Network suddenly got stronger. Unless you moved closer to AP, should be cautious")
+
 	except KeyboardInterrupt:
 		return
 

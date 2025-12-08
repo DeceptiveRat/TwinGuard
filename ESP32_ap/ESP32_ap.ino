@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <DNSServer.h>
 
-const char* ssid = "wifi";
+const char* ssid = "public wifi";
 const char* password = "12345678";
 const char* test_ssid = "ESP32";
 const char* test_password = "12345678";
@@ -108,25 +108,20 @@ void loop() {
     }
   }
   
-  // 4. The Pipeline (Streaming Data)
-  // Read from Web -> Write to Victim immediately
   unsigned long lastActivity = millis();
       
   while (webhost.connected() || webhost.available()) {
     if (webhost.available()) {
-      // Read a chunk (buffer) instead of a char
       uint8_t buffer[128];
       int len = webhost.read(buffer, sizeof(buffer));
       if (len > 0) {
       // Forward directly to victim
       victim.write(buffer, len);
-      // Optional: Print to serial to debug (slows things down though)
-      Serial.write(buffer, len); 
+      //Serial.write(buffer, len); 
       lastActivity = millis();
       }
     }
         
-    // Timeout safety
     if (millis() - lastActivity > 10000) {
       Serial.println("Transfer timed out");
       break;
