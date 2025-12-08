@@ -17,25 +17,13 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 ---
 
 ## 2. 🏗️ Workflow & Architecture
-
 TwinGuard visualizes invisible network threats through a **3-stage pipeline**. It captures packets, analyzes them for anomalies, and alerts the user.
 
-```mermaid
-graph TD
-    User((User/Client)) -->|1. Start Scan| UI[Integrated Dashboard]
-    
-    subgraph "TwinGuard Core System"
-        UI -->|2. Execute Process| Collector[Data Collector]
-        UI -->|2. Execute Process| Analyzer[Analyzer & Detector]
-        
-        Collector -- "Real-time Packets & RSSI" --> Analyzer
-        
-        subgraph "Detection Algorithm"
-            Analyzer --> Check1{Is signal suspiciously strong?}
-            Analyzer --> Check2{Has the BSSID changed?}
-            Analyzer --> Check3{Is there network latency (RTT)?}
-        end
-    end
-    
-    Analyzer -- "4. Result (Normal/Suspicious/High Risk)" --> UI
-    UI -->|5. Display Alert| User
+##단계,역할 모듈,주요 작동 내용
+1. 데이터 수집,Collector (PacketCapture.py),"**실시간 패킷(TCP/UDP)**을 캡처하고, 현재 연결된 AP의 **물리 주소(BSSID)**와 신호 강도(RSSI) 정보를 1개씩 추출하여 Port 5001로 전송합니다."
+2. 특징 추출 및 분석,Preprocessor (extract.py),"Port 5001에서 데이터를 수신합니다. 수신된 패킷의 BSSID를 **기존 데이터베이스(SSID.json)**와 비교하여 BSSID 변경 유무를 확인하고, 점수 계산에 필요한 핵심 특징(RSSI, BSSID 변경 플래그)을 Port 5002로 전달합니다."
+3. 위험도 탐지,Detector (AnomalyDetector.py),"Port 5002에서 분석 데이터를 수신합니다. 학습된 **정상 범위(Baseline)**를 기준으로 RSSI, RTT, BSSID 변경 등의 항목에 **벌점(Score)**을 매기고, 위험 등급(NORMAL, SUSPICIOUS, HIGH)을 결정하여 Port 5003으로 보냅니다."
+4. 결과 표시,UI (win_ui.py),Port 5003에서 최종 탐지 결과를 수신하여 사용자에게 실시간으로 출력합니다.
+
+
+
