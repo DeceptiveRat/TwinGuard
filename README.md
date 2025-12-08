@@ -6,7 +6,7 @@
 
 ---
 
-## 1. 💡 Motivation
+## 1. Motivation
 
 **"Hacking tools are everywhere, but why are defense tools so difficult to use?"**
 
@@ -16,7 +16,7 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 
 ---
 
-## 2. 🏗️ Workflow & Architecture
+## 2. Workflow & Architecture
 TwinGuard visualizes invisible network threats through a **3-stage pipeline**. It captures packets, analyzes them for anomalies, and alerts the user.
 
 ## 단계,역할 모듈,주요 작동 내용
@@ -27,8 +27,8 @@ TwinGuard visualizes invisible network threats through a **3-stage pipeline**. I
 
 ---
 
-## 3. ⚙️ 필수 준비 사항 (Prerequisites)
-### 💻 필수 설치 도구
+## 3. 필수 준비 사항 (Prerequisites)
+### 💻 Prerequisites
 
 1.  **Python 3.x**
     * 설치 시 **`Add Python to PATH`** 옵션을 반드시 체크해야 합니다.
@@ -36,9 +36,19 @@ TwinGuard visualizes invisible network threats through a **3-stage pipeline**. I
 2.  **Wireshark (TShark 포함)**
     * **Wireshark**를 설치할 때, 패킷 캡처 엔진인 **TShark**와 **Npcap**이 함께 설치되도록 옵션을 체크해야 합니다. (TwinGuard는 `pyshark`를 통해 TShark 엔진을 사용합니다.)
 
-### 📥 Python 라이브러리 설치
+### Python 라이브러리 설치
 
 터미널을 열고 다음 명령어를 실행하여 필수 라이브러리를 설치합니다.
 
 ```bash
 pip install pyshark
+
+---
+
+## 4. 🧪 테스트 결과 및 현황 (Results & Current Status)
+
+이 섹션은 TwinGuard 프로젝트의 현재 기능 검증 상태와 향후 개선할 부분을 요약합니다.
+
+* **성공적인 PoC (Proof of Concept):** 저희는 해킹 장비인 **ESP32 모듈**을 사용하여 실제와 동일한 가짜 Wi-Fi 환경을 구축했습니다. TwinGuard는 이 환경에서 정상 AP와 가짜 AP를 명확히 구분하고 사용자에게 **적절한 위험 경고**를 표시하는 것을 확인했습니다.
+* **최적화:** 현재 실시간 패킷 분석 파이프라인(Capture, Preprocessor, Detector)은 완성되었으나, `pyshark`와 `netsh` 사용으로 인한 **저사양 PC에서의 자원 사용량 최적화**는 현재 진행 중인 과제입니다.
+* **한계점:** 현재 버전은 **Evil Twin 공격 탐지**에 특화되어 있습니다. ARP Spoofing과 같이 네트워크 계층(Layer 3)에서 발생하는 보다 복잡하고 고도화된 변칙 공격에 대한 대응 로직은 향후 연구 과제로 남아 있습니다.
