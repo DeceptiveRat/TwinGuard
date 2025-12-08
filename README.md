@@ -1,55 +1,94 @@
-# TwinGuard
-# 🛡️ Evil Twin 공격 탐지 및 데이터 수집 자동화 시스템
+# 🛡️ TwinGuard: Your Personal Wi-Fi Bodyguard
 
-## 1. 프로젝트 개요 및 목표
-
-* **주제:** 지능형 무선 네트워크 위협 탐지 자동화 시스템 설계
-* **목표:** 사용자 데이터 보호를 위한 Evil Twin Attack 실시간 감지 및 방어 데이터셋 구축.
+> **"Cafes, Airports, Schools... Is the Wi-Fi you are connected to right now actually safe?"**
+>
+> **TwinGuard** is a user-friendly, Windows-based security solution designed to detect **Evil Twin attacks** (fake Wi-Fi hotspots) and protect your personal data in real-time.
 
 ---
 
-## 2. 필수 라이브러리 및 설치 (VScode와 python, pip 등은 기본적으로 깔려있다고 가정하겠습니다) 
+## 1. 💡 Motivation
 
-* **1.WireShark:** 인터넷에서 다운해야됨 -> 여기에서 Tshark(터미널 기반 패킷 처리)가 자연스럽게 다운받아짐 
-* **2.Pyshark:** python에서 사용하는 패킷 캡처 및 분석 라이브러리(Tshark에서 가져오는 데이터) vscode 터미널에서- pip install pyshark
+**"Hacking tools are everywhere, but why are defense tools so difficult to use?"**
 
----
+The **Evil Twin attack**—where a hacker creates a fake Wi-Fi access point to intercept data—is a well-known threat. However, detecting it has traditionally remained in the realm of experts. Average users cannot be expected to open a terminal and analyze network packets manually.
 
-## 3. 코드 구조 및 역할
-| 함수/모듈 | 역할 및 기능 |
-| :--- | :--- |
-| **`get_wifi_info()`** | Windows `netsh` 명령어를 실행하여 현재 연결된 AP의 **SSID, BSSID, RSSI(신호 강도)**를 실시간으로 파싱합니다. (CP949 인코딩 처리 포함) |
-| **`capture_and_merge()`** | **Pyshark**를 이용해 패킷을 실시간 캡처하고, Wi-Fi 환경 정보와 패킷별 상세 데이터(RTT, TCP Flags, DNS Query 등)를 병합합니다. |
-| **`send_to_socket()`** | 수집된 패킷 데이터를 **JSON 포맷**으로 직렬화하여 로컬 소켓(`127.0.0.1:5001`)을 통해 분석 서버(AI 모델)로 전송합니다. |
-| **`Asyncio Fix`** | Python 3.11+ 및 Windows 환경에서 발생하는 `Pyshark`의 비동기 이벤트 루프 오류(`RuntimeError`)를 방지하는 호환성 코드가 포함되어 있습니다. |
-
-### 작동 프로세스 (Operational Logic)
-
-1.  **초기화 (Initialization):** Windows 비동기 루프 정책 설정 및 사용자 로컬 디바이스 정보(IP/MAC)를 식별합니다.
-2.  **컨텍스트 수집 (Context Awareness):** 주기적으로 `netsh`를 호출하여 현재 AP의 물리적 상태(RSSI, BSSID)를 갱신합니다.
-3.  **패킷 캡처 및 배치 (Batch Capture):** * TCP/UDP 패킷을 실시간으로 감지합니다.
-    * **5개의 패킷**이 모일 때까지 메모리에 버퍼링합니다.
-4.  **데이터 병합 (Data Merging):** * 각 패킷에 `i_rtt`, `ack_rtt`, `tcp_flags` 등의 보안 Feature를 추출하여 매핑합니다.
-    * UDP 패킷의 경우 RTT 값을 `-1.0`으로 마킹하여 데이터 정합성을 유지합니다.
-5.  **전송 및 저장 (Export):**
-    * 완성된 배치를 `Packet_data.json` 파일로 저장(백업)합니다.
-    * 동시에 소켓을 통해 실시간 분석 엔진으로 데이터를 전송합니다.
+We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal was to create a practical application that allows anyone, regardless of technical background, to verify the safety of their surrounding Wi-Fi networks with a single click.
 
 ---
 
-## 4. 추출 데이터 필드 정의
+## 2. 🏗️ Workflow & Architecture
 
-* **id**: 패킷 넘버
-* **timestamp**: 패킷이 캡처된 시간.
-* 
-*  **protocol**:프로토콜 타입(TCP, UDP)
-*  **ap_rssi**: 수신 신호 강도 (AP의 세기).
-*  **ap_bssid**: AP의 MAC 주소
-* **src_ip / dst_ip**:
-* **src_mac / dst_mac**:
-* * **src_port / dst_port**:
-* **tcp_flags**: TCP 통신 상태 플래그 (ACK(0x0010):수신 확인, SYN(0x0002):새로운 TCP연결 시작, FIN(0x0001):연결 정상 종료)
-* **i_rtt_sec**: Initial RTT (초기 왕복 시간, 최초 TCP통신 handshake에서만 있어서 보통 0일것임).
-* **rtt_continuous_sec**: 연속 RTT (연결 유지 중 왕복 시간).
-* **dns_query**: DNS 서버에 요청한 웹 도메인 주소. (실제로 뜸 ex:"mobile.events.data.microsoft.com")
----
+TwinGuard visualizes invisible network threats through a **3-stage pipeline**. It captures packets, analyzes them for anomalies, and alerts the user.
+
+```mermaid
+graph TD
+    User((User/Client)) -->|1. Start Scan| UI[Integrated Dashboard]
+    
+    subgraph "TwinGuard Core System"
+        UI -->|2. Execute Process| Collector[Data Collector]
+        UI -->|2. Execute Process| Analyzer[Analyzer & Detector]
+        
+        Collector -- "Real-time Packets & RSSI" --> Analyzer
+        
+        subgraph "Detection Algorithm"
+            Analyzer --> Check1{Is signal suspiciously strong?}
+            Analyzer --> Check2{Has the BSSID changed?}
+            Analyzer --> Check3{Is there network latency (RTT)?}
+        end
+    end
+    
+    Analyzer -- "4. Result (Normal/Suspicious/High Risk)" --> UI
+    UI -->|5. Display Alert| User
+🔍 Anomaly Detection Logic
+We analyze physical and communication characteristics that hackers cannot easily hide, rather than just looking at the SSID (Network Name).
+
+📶 Physical Signal (RSSI): If the signal strength is abnormally high compared to the baseline, it is suspicious (Hackers often boost signals to lure victims).
+
+🆔 Device Address (BSSID): If the Wi-Fi name is the same but the MAC Address (BSSID) has changed, it is a 100% indication of a different device.
+
+🐢 Communication Latency (RTT): Since internet traffic is relayed through the hacker's device, inevitable speed delays (Latency) occur. We detect these micro-delays in TCP packets.
+
+3. ⚙️ Getting Started
+This program is designed for Windows 10/11 environments.
+
+Prerequisites
+The following tools are required for network packet analysis:
+
+Python 3.x (⚠️ Ensure Add to PATH is checked during installation).
+
+Wireshark
+
+Crucial: You must select Install TShark and Install Npcap during the installation process.
+
+Python Libraries Run the following command in your terminal:
+
+Bash
+
+pip install pyshark
+Installation & Execution
+Clone or download this repository.
+
+Open Command Prompt (CMD), PowerShell, or VS Code as Administrator (Required for network access).
+
+Run the main UI script:
+
+Bash
+
+python ui_windows.py
+4. 🧪 Results & Current Status
+Successful PoC (Proof of Concept): We constructed a fake Wi-Fi environment using an ESP32 hacking module. TwinGuard successfully distinguished between the legitimate Wi-Fi and the fake one, displaying appropriate warning alerts.
+
+Optimization: While the real-time packet analysis structure is complete, resource optimization for low-spec PCs is currently in progress.
+
+Limitations: The current version is specialized for Evil Twin attacks. Response capabilities for more advanced attacks, such as ARP Spoofing, require further research.
+
+5. 🚀 Future Roadmap
+We aim to evolve from a simple detection tool into an integrated security platform.
+
+🧠 AI-Based Detection: Moving beyond rule-based detection, we plan to implement Machine Learning models that learn the user's normal network patterns to detect subtle anomalies.
+
+☁️ Threat Intelligence Cloud: A feature for users to share detected fake Wi-Fi data to a central server, pre-warning other users that "This location is a hacking danger zone."
+
+📱 Mobile App Expansion: Developing background apps for smartphones that automatically diagnose safety when connecting to public Wi-Fi.
+
+🛡️ Automated Defense System: A feature that automatically disconnects Wi-Fi without user intervention when a 'High Risk' threat is detected, preventing data leakage at the source
