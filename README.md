@@ -38,7 +38,7 @@ TwinGuard visualizes invisible network threats through a **3-stage pipeline**. I
 
 ### Python 라이브러리 설치
 
-터미널을 열고 다음 명령어를 실행하면 됩니다.
+터미널을 열고 다음 명령어를 실행하면 됩니다.(vscode 에서 하는 것을 추천)
 
 ```bash
 pip install pyshark
