@@ -59,3 +59,6 @@ pip install pyshark
 * **AI-Based Detection (탐지 고도화):** 현재의 규칙 기반(Rule-based) 탐지를 넘어, 사용자의 평소 네트워크 패턴을 학습하는 **딥러닝 모델**을 도입하여 미세한 변칙 공격까지 탐지.
 * **Mobile App Expansion (모바일 확장):** 노트북뿐만 아니라 스마트폰에서도 백그라운드에서 작동하며 공공 Wi-Fi 연결 시 자동으로 안전을 진단하는 앱을 개발.
 * **Automated Defense System (자동 방어 시스템):** 위험(HIGH) 단계가 감지되면 사용자 개입 없이 **즉시 Wi-Fi 연결을 강제로 차단**하여 데이터 유출을 원천 봉쇄하는 기능 추가.
+
+## 6. 소개 영상
+https://www.youtube.com/watch?v=pgGWMVlFoi8&feature=youtu.be
