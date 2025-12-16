@@ -6,7 +6,7 @@
 
 ---
 
-## 1. Motivation
+## 1. 동기 (Motivation)
 
 **"Hacking tools are everywhere, but why are defense tools so difficult to use?"**
 
@@ -16,7 +16,7 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 
 ---
 
-## 2. Workflow & Architecture
+## 2. 작동 흐름 (Workflow & Architecture)
 TwinGuard visualizes invisible network threats through a **3-stage pipeline**. It captures packets, analyzes them for anomalies, and alerts the user.
 
 ## 단계,역할 모듈,주요 작동 내용
