@@ -1,55 +1,64 @@
-# TwinGuard
-# 🛡️ Evil Twin 공격 탐지 및 데이터 수집 자동화 시스템
+# 🛡️ TwinGuard: Your Personal Wi-Fi Bodyguard
 
-## 1. 프로젝트 개요 및 목표
-
-* **주제:** 지능형 무선 네트워크 위협 탐지 자동화 시스템 설계
-* **목표:** 사용자 데이터 보호를 위한 Evil Twin Attack 실시간 감지 및 방어 데이터셋 구축.
+> **"Cafes, Airports, Schools... Is the Wi-Fi you are connected to right now actually safe?"**
+>
+> **TwinGuard** is a user-friendly, Windows-based security solution designed to detect **Evil Twin attacks** (fake Wi-Fi hotspots) and protect your personal data in real-time.
 
 ---
 
-## 2. 필수 라이브러리 및 설치 (VScode와 python, pip 등은 기본적으로 깔려있다고 가정하겠습니다) 
+## 1. 동기 (Motivation)
 
-* **1.WireShark:** 인터넷에서 다운해야됨 -> 여기에서 Tshark(터미널 기반 패킷 처리)가 자연스럽게 다운받아짐 
-* **2.Pyshark:** python에서 사용하는 패킷 캡처 및 분석 라이브러리(Tshark에서 가져오는 데이터) vscode 터미널에서- pip install pyshark
+**"Hacking tools are everywhere, but why are defense tools so difficult to use?"**
 
----
+The **Evil Twin attack**—where a hacker creates a fake Wi-Fi access point to intercept data—is a well-known threat. However, detecting it has traditionally remained in the realm of experts. Average users cannot be expected to open a terminal and analyze network packets manually.
 
-## 3. 코드 구조 및 역할
-| 함수/모듈 | 역할 및 기능 |
-| :--- | :--- |
-| **`get_wifi_info()`** | Windows `netsh` 명령어를 실행하여 현재 연결된 AP의 **SSID, BSSID, RSSI(신호 강도)**를 실시간으로 파싱합니다. (CP949 인코딩 처리 포함) |
-| **`capture_and_merge()`** | **Pyshark**를 이용해 패킷을 실시간 캡처하고, Wi-Fi 환경 정보와 패킷별 상세 데이터(RTT, TCP Flags, DNS Query 등)를 병합합니다. |
-| **`send_to_socket()`** | 수집된 패킷 데이터를 **JSON 포맷**으로 직렬화하여 로컬 소켓(`127.0.0.1:5001`)을 통해 분석 서버(AI 모델)로 전송합니다. |
-| **`Asyncio Fix`** | Python 3.11+ 및 Windows 환경에서 발생하는 `Pyshark`의 비동기 이벤트 루프 오류(`RuntimeError`)를 방지하는 호환성 코드가 포함되어 있습니다. |
-
-### 작동 프로세스 (Operational Logic)
-
-1.  **초기화 (Initialization):** Windows 비동기 루프 정책 설정 및 사용자 로컬 디바이스 정보(IP/MAC)를 식별합니다.
-2.  **컨텍스트 수집 (Context Awareness):** 주기적으로 `netsh`를 호출하여 현재 AP의 물리적 상태(RSSI, BSSID)를 갱신합니다.
-3.  **패킷 캡처 및 배치 (Batch Capture):** * TCP/UDP 패킷을 실시간으로 감지합니다.
-    * **5개의 패킷**이 모일 때까지 메모리에 버퍼링합니다.
-4.  **데이터 병합 (Data Merging):** * 각 패킷에 `i_rtt`, `ack_rtt`, `tcp_flags` 등의 보안 Feature를 추출하여 매핑합니다.
-    * UDP 패킷의 경우 RTT 값을 `-1.0`으로 마킹하여 데이터 정합성을 유지합니다.
-5.  **전송 및 저장 (Export):**
-    * 완성된 배치를 `Packet_data.json` 파일로 저장(백업)합니다.
-    * 동시에 소켓을 통해 실시간 분석 엔진으로 데이터를 전송합니다.
+We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal was to create a practical application that allows anyone, regardless of technical background, to verify the safety of their surrounding Wi-Fi networks with a single click.
 
 ---
 
-## 4. 추출 데이터 필드 정의
+## 2. 작동 흐름 (Workflow & Architecture)
+TwinGuard visualizes invisible network threats through a **3-stage pipeline**. It captures packets, analyzes them for anomalies, and alerts the user.
 
-* **id**: 패킷 넘버
-* **timestamp**: 패킷이 캡처된 시간.
-* 
-*  **protocol**:프로토콜 타입(TCP, UDP)
-*  **ap_rssi**: 수신 신호 강도 (AP의 세기).
-*  **ap_bssid**: AP의 MAC 주소
-* **src_ip / dst_ip**:
-* **src_mac / dst_mac**:
-* * **src_port / dst_port**:
-* **tcp_flags**: TCP 통신 상태 플래그 (ACK(0x0010):수신 확인, SYN(0x0002):새로운 TCP연결 시작, FIN(0x0001):연결 정상 종료)
-* **i_rtt_sec**: Initial RTT (초기 왕복 시간, 최초 TCP통신 handshake에서만 있어서 보통 0일것임).
-* **rtt_continuous_sec**: 연속 RTT (연결 유지 중 왕복 시간).
-* **dns_query**: DNS 서버에 요청한 웹 도메인 주소. (실제로 뜸 ex:"mobile.events.data.microsoft.com")
+## 단계,역할 모듈,주요 작동 내용
+1. 데이터 수집,Collector (PacketCapture.py),"**실시간 패킷(TCP/UDP)**을 캡처하고, 현재 연결된 AP의 **물리 주소(BSSID)**와 신호 강도(RSSI) 정보를 1개씩 추출하여 Port 5001로 전송합니다."
+2. 특징 추출 및 분석,Preprocessor (extract.py),"Port 5001에서 데이터를 수신합니다. 수신된 패킷의 BSSID를 **기존 데이터베이스(SSID.json)**와 비교하여 BSSID 변경 유무를 확인하고, 점수 계산에 필요한 핵심 특징(RSSI, BSSID 변경 플래그)을 Port 5002로 전달합니다."
+3. 위험도 탐지,Detector (AnomalyDetector.py),"Port 5002에서 분석 데이터를 수신합니다. 학습된 **정상 범위(Baseline)**를 기준으로 RSSI, RTT, BSSID 변경 등의 항목에 **벌점(Score)**을 매기고, 위험 등급(NORMAL, SUSPICIOUS, HIGH)을 결정하여 Port 5003으로 보냅니다."
+4. 결과 표시,UI (ui.py),Port 5003에서 최종 탐지 결과를 수신하여 사용자에게 실시간으로 출력합니다.
+
 ---
+
+## 3. 필수 준비 사항 (Prerequisites)
+### 💻 Prerequisites
+
+1.  **Python 3.x**
+    * 설치 시 **`Add Python to PATH`** 옵션을 반드시 체크해야 합니다.
+
+2.  **Wireshark (TShark 포함)**
+    * **Wireshark**를 설치할 때, 패킷 캡처 엔진인 **TShark**와 **Npcap**이 함께 설치되도록 옵션을 체크해야 합니다. (TwinGuard는 `pyshark`를 통해 TShark 엔진을 사용합니다.)
+
+### Python 라이브러리 설치
+
+터미널을 열고 다음 명령어를 실행하면 됩니다.(vscode 에서 하는 것을 추천)
+
+```bash
+pip install pyshark
+```
+
+---
+
+## 4. 테스트 결과 및 현황 (Results & Current Status)
+
+* **실험:**  **ESP32 모듈**을 사용하여 가짜 Wi-Fi 환경을 구축했습니다. 프로그램은 이 환경에서 정상 AP와 가짜 AP를 명확히 구분하고 사용자에게 **적절한 위험 경고**를 표시하는 것을 확인했습니다.
+* **최적화:** 현재 실시간 패킷 분석 파이프라인(Capture, Preprocessor, Detector)은 완성되었으나, 코드 최적화를 한 것은 아닙니다.
+* **한계점:** 현재 버전은 **Evil Twin 공격 탐지**에 특화되어 있습니다. 고도화된 ARP Spoofing과 같이 보다 복잡하고 고도화된 변칙 공격에 대한 대응 로직은 향후 연구 과제로 남아 있습니다.
+
+---
+
+## 5. 향후 연구 및 발전 방향 (Future Roadmap)
+
+* **AI-Based Detection (탐지 고도화):** 현재의 규칙 기반(Rule-based) 탐지를 넘어, 사용자의 평소 네트워크 패턴을 학습하는 **딥러닝 모델**을 도입하여 미세한 변칙 공격까지 탐지.
+* **Mobile App Expansion (모바일 확장):** 노트북뿐만 아니라 스마트폰에서도 백그라운드에서 작동하며 공공 Wi-Fi 연결 시 자동으로 안전을 진단하는 앱을 개발.
+* **Automated Defense System (자동 방어 시스템):** 위험(HIGH) 단계가 감지되면 사용자 개입 없이 **즉시 Wi-Fi 연결을 강제로 차단**하여 데이터 유출을 원천 봉쇄하는 기능 추가.
+
+## 6. 소개 영상
+https://www.youtube.com/watch?v=pgGWMVlFoi8&feature=youtu.be
