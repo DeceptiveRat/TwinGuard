@@ -38,21 +38,22 @@ try:
 		BSSID = parsed_data['ap_bssid']
 		i_rtt = parsed_data['i_rtt']
 		rtt = parsed_data['ack_rtt']
+		is_attack = parsed_data['is_attack']
 
 		# new SSID
 		if SSID not in SSID_dictionary.keys():
 			SSID_dictionary.update({SSID:[BSSID]})
 		# new BSSID for SSID
 		elif BSSID not in SSID_dictionary[SSID]:
-			SSID_dictionary[SSID].append(BSSID)
-			print(SSID_dictionary)
+			#SSID_dictionary[SSID].append(BSSID)
+			#print(SSID_dictionary)
 			new_BSSID = True
 
 		if protocol == "UDP":
-			data_to_send = json.dumps({"Protocol":protocol, "RSSI":RSSI, "new_BSSID":new_BSSID})
+			data_to_send = json.dumps({"Protocol":protocol, "RSSI":RSSI, "new_BSSID":new_BSSID, "is_attack":is_attack})
 			ML_socket.sendto(data_to_send.encode('utf-8'), (IP, ML_port))
 		elif protocol == "TCP":
-			data_to_send = json.dumps({"Protocol":protocol, "RSSI":RSSI, "RTT":rtt, "new_BSSID":new_BSSID})
+			data_to_send = json.dumps({"Protocol":protocol, "RSSI":RSSI, "RTT":rtt, "new_BSSID":new_BSSID, "is_attack":is_attack})
 			ML_socket.sendto(data_to_send.encode('utf-8'), (IP, ML_port))
 		else:
 			print("Error! Unsupported protocol")
