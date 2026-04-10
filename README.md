@@ -16,7 +16,7 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 
 ---
 
-## 2.📂 Module Descriptions
+## 2.📂 Module Arichitecture
 | 단계 | 파일명 | 주요 역할 | 포트 |
 | :--- | :--- | :--- | :--- |
 | **1** | `PacketCapture.py` | 실시간 패킷 캡처 및 Wi-Fi 정보(RSSI, BSSID 등) 추출 | **5001** |
