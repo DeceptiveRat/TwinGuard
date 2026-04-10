@@ -2,7 +2,7 @@
 
 > **"Cafes, Airports, Schools... Is the Wi-Fi you are connected to right now actually safe?"**
 >
-> **TwinGuard** is a user-friendly, Windows-based security solution designed to detect **Evil Twin attacks** (fake Wi-Fi hotspots) and protect your personal data in real-time.
+> **TwinGuard** is a user-friendly security solution designed to detect **Evil Twin attacks** (fake Wi-Fi hotspots) and protect your personal data in real-time.
 
 ---
 
