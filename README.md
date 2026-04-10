@@ -17,14 +17,15 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 ---
 
 ## 2.📂 Module Descriptions
-
 | 단계 | 파일명 | 주요 역할 | 포트 |
-| :--- | : :--- | :--- | :--- |
-| 1 | PacketCapture.py | 실시간 패킷 캡처 및 Wi-Fi 정보(RSSI, BSSID 등) 추출 | 5001 |
-| 2 | extract.py* | BSSID 화이트리스트 대조 및 ML용 피쳐(Feature) 정제 | 5002 |
-| 3 | AnomalyDetector.py | Baseline 학습, Rule 기반 스코어링 및 Isolation Forest 탐지 | 5003 |
-| 4 | ui.py | 최종 탐지 결과 수신 및 사용자 경고 알림 출력 | - |
-| - | SVM.py / CreateTrainingData.py | 오프라인 학습 데이터 생성 및 SVM 모델 훈련 | - |
+| :--- | :--- | :--- | :--- |
+| **1** | `PacketCapture.py` | 실시간 패킷 캡처 및 Wi-Fi 정보(RSSI, BSSID 등) 추출 | **5001** |
+| **2** | `extract.py` | BSSID 화이트리스트 대조 및 ML용 특징(Feature) 정제 | **5002** |
+| **3** | `AnomalyDetector.py` | Baseline 학습, Rule 기반 스코어링 및 Isolation Forest 탐지 | **5003** |
+| **4** | `ui.py` | 최종 탐지 결과 수신 및 사용자 경고 알림 출력 | - |
+| **-** | `SVM.py` / `CreateTrainingData.py` | 오프라인 학습 데이터 생성 및 SVM 모델 훈련 | - |
+
+---
 ### 1. PacketCapture.py (Data Collection)
 * `Pyshark`를 이용해 공중의 무선 패킷을 실시간으로 스니핑합니다.
 * 현재 연결된 AP의 SSID, BSSID, RSSI 정보와 패킷별 RTT 정보를 추출하여 **Port 5001**로 전송합니다.
