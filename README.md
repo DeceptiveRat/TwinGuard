@@ -26,30 +26,6 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 | **-** | `SVM.py` / `CreateTrainingData.py` | 오프라인 학습 데이터 생성 및 SVM 모델 훈련 | - |
 
 ---
-### 1. PacketCapture.py (Data Collection)
-* `Pyshark`를 이용해 공중의 무선 패킷을 실시간으로 스니핑합니다.
-* 현재 연결된 AP의 SSID, BSSID, RSSI 정보와 패킷별 RTT 정보를 추출하여 **Port 5001**로 전송합니다.
-
-### 2. CreateTrainingData.py (Data Labeling)
-* 머신러닝 학습을 위한 **정답지(Label)**를 생성하는 모듈입니다.
-* 특정 공격자 BSSID를 기준으로 `is_attack` 플래그(0 또는 1)를 부여하여 `packets.log`를 생성합니다.
-
-### 3. SVM.py (Off-line Learning)
-* 수집된 로그 데이터를 바탕으로 **SVM(Support Vector Machine)** 모델을 학습시킵니다.
-* RSSI, RTT, Protocol, new_BSSID 등의 특징점 간 상관관계를 분석하여 공격과 정상을 가르는 최적의 경계선을 형성합니다.
-
-### 4. AnomalyDetector.py (Intelligence Engine)
-* **Hybrid Detection 기술**이 집약된 핵심 엔진입니다.
-    * **Baseline Learning**: 실행 초기 10초간의 네트워크 환경을 정상으로 학습합니다.
-    * **Rule-based Score**: RSSI 급변, 신규 BSSID 등장 시 벌점을 부여합니다.
-    * **Isolation Forest**: 통계적으로 튀는 이상 데이터를 실시간으로 감지합니다.
-* 합산된 위험도를 바탕으로 `NORMAL`, `SUSPICIOUS`, `HIGH` 등급을 **Port 5003**으로 보냅니다.
-
-### 5. ui.py (Control Tower)
-* 모든 서브 프로세스(`Capture`, `Preprocessor`, `Detector`)를 관리하는 **통합 실행기**입니다.
-* 탐지된 위험 등급에 따라 "가짜 Wi-Fi 감지" 등 직관적인 경고 메시지와 대응 가이드를 사용자에게 출력합니다.
-
----
 
 ## 3. 필수 준비 사항 (Prerequisites)
 ### 💻 Prerequisites
