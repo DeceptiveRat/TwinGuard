@@ -16,14 +16,30 @@ We aimed to bridge this gap by taking a **'User-Friendly'** approach. Our goal w
 
 ---
 
-## 2. 작동 흐름 (Workflow & Architecture)
-TwinGuard visualizes invisible network threats through a **3-stage pipeline**. It captures packets, analyzes them for anomalies, and alerts the user.
+## 2.📂 Module Descriptions
 
-## 단계,역할 모듈,주요 작동 내용
-1. 데이터 수집,Collector (PacketCapture.py),"**실시간 패킷(TCP/UDP)**을 캡처하고, 현재 연결된 AP의 **물리 주소(BSSID)**와 신호 강도(RSSI) 정보를 1개씩 추출하여 Port 5001로 전송합니다."
-2. 특징 추출 및 분석,Preprocessor (extract.py),"Port 5001에서 데이터를 수신합니다. 수신된 패킷의 BSSID를 **기존 데이터베이스(SSID.json)**와 비교하여 BSSID 변경 유무를 확인하고, 점수 계산에 필요한 핵심 특징(RSSI, BSSID 변경 플래그)을 Port 5002로 전달합니다."
-3. 위험도 탐지,Detector (AnomalyDetector.py),"Port 5002에서 분석 데이터를 수신합니다. 학습된 **정상 범위(Baseline)**를 기준으로 RSSI, RTT, BSSID 변경 등의 항목에 **벌점(Score)**을 매기고, 위험 등급(NORMAL, SUSPICIOUS, HIGH)을 결정하여 Port 5003으로 보냅니다."
-4. 결과 표시,UI (ui.py),Port 5003에서 최종 탐지 결과를 수신하여 사용자에게 실시간으로 출력합니다.
+### 1. PacketCapture.py (Data Collection)
+* `Pyshark`를 이용해 공중의 무선 패킷을 실시간으로 스니핑합니다.
+* 현재 연결된 AP의 SSID, BSSID, RSSI 정보와 패킷별 RTT 정보를 추출하여 **Port 5001**로 전송합니다.
+
+### 2. CreateTrainingData.py (Data Labeling)
+* 머신러닝 학습을 위한 **정답지(Label)**를 생성하는 모듈입니다.
+* 특정 공격자 BSSID를 기준으로 `is_attack` 플래그(0 또는 1)를 부여하여 `packets.log`를 생성합니다.
+
+### 3. SVM.py (Off-line Learning)
+* 수집된 로그 데이터를 바탕으로 **SVM(Support Vector Machine)** 모델을 학습시킵니다.
+* RSSI, RTT, Protocol, new_BSSID 등의 특징점 간 상관관계를 분석하여 공격과 정상을 가르는 최적의 경계선을 형성합니다.
+
+### 4. AnomalyDetector.py (Intelligence Engine)
+* **Hybrid Detection 기술**이 집약된 핵심 엔진입니다.
+    * **Baseline Learning**: 실행 초기 10초간의 네트워크 환경을 정상으로 학습합니다.
+    * **Rule-based Score**: RSSI 급변, 신규 BSSID 등장 시 벌점을 부여합니다.
+    * **Isolation Forest**: 통계적으로 튀는 이상 데이터를 실시간으로 감지합니다.
+* 합산된 위험도를 바탕으로 `NORMAL`, `SUSPICIOUS`, `HIGH` 등급을 **Port 5003**으로 보냅니다.
+
+### 5. ui.py (Control Tower)
+* 모든 서브 프로세스(`Capture`, `Preprocessor`, `Detector`)를 관리하는 **통합 실행기**입니다.
+* 탐지된 위험 등급에 따라 "가짜 Wi-Fi 감지" 등 직관적인 경고 메시지와 대응 가이드를 사용자에게 출력합니다.
 
 ---
 
