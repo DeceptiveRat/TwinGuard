@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
 import json
+import joblib
 
 def predict_live_traffic(model, scaler, new_data_point):
 	scaled_point = scaler.transform([new_data_point])
@@ -44,6 +45,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 
 # scale data
 scaler = StandardScaler()
+print(X_train.columns)
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
@@ -60,3 +62,7 @@ print(confusion_matrix(y_test, y_pred))
 print("\n--- Classification Report ---")
 print(classification_report(y_test, y_pred, target_names=['Normal', 'Evil Twin']))
 
+print("\nSaving trained model to disk...")
+joblib.dump(svm_model, 'evil_twin_detector.pkl')
+joblib.dump(scaler, 'feature_scaler.pkl')
+print("Model and scaler saved successfully. Ready for deployment.")

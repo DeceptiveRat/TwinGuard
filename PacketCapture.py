@@ -20,7 +20,8 @@ if sys.platform == 'win32':
 # ------------------------------------------------------------------
 
 # --- 설정 ---
-INTERFACE = 'Wi-Fi'
+#INTERFACE = 'Wi-Fi'
+INTERFACE = 'wlx00ada7025523'
 BATCH_SIZE = 1
 OUTPUT_FILE = 'Packet_data.json' 
 SLEEP_TIME = 0.1
