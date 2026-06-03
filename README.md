@@ -113,7 +113,6 @@ tshark -v
 
 ```bash
 git clone https://github.com/DeceptiveRat/TwinGuard.git
-cd TwinGuard
 ```
 
 ---
