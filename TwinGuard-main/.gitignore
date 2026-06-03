@@ -1,0 +1,13 @@
+*.swp
+__pycache__/
+*.pyc
+*.log
+
+Packet_data.json
+SSID.json
+
+desktop.ini
+-Context
+
+.venv/
+.env
