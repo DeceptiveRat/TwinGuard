@@ -59,12 +59,6 @@ TwinGuard는 여러 Python 모듈을 실행하고, 로컬 UDP 소켓으로 데�
 
 `ui.py`는 UDP `5003`에서 이 값을 수신하고, 웹 화면에 최신 탐지 결과를 표시합니다.
 
-### 참고
-
-- `AnomalyDetector.py`는 레거시 탐지 엔진입니다.
-- 최신 실행 흐름에서는 `SVM_deploy.py`를 사용합니다.
-- `SVM_train.py`, `CreateTrainingData.py`는 모델 학습 또는 데이터 생성용 파일이며, 일반 실행에는 필요하지 않습니다.
-
 ---
 
 ## 4. 필수 준비 사항
@@ -88,19 +82,7 @@ pip --version
 
 ---
 
-### 4.2 Git
-
-프로젝트를 클론하기 위해 Git이 필요합니다.
-
-설치 확인:
-
-```bash
-git --version
-```
-
----
-
-### 4.3 Wireshark, TShark, Npcap
+### 4.2 Wireshark, TShark, Npcap
 
 TwinGuard는 `pyshark`를 통해 패킷을 캡처합니다.  
 `pyshark`는 내부적으로 Wireshark의 `TShark`를 사용합니다.
@@ -113,11 +95,7 @@ TwinGuard는 `pyshark`를 통해 패킷을 캡처합니다.
 
 Wireshark 설치 중 아래 옵션을 체크하는 것을 권장합니다.
 
-```text
-Install TShark
-Install Npcap
-Add Wireshark to system PATH
-```
+https://www.wireshark.org/download.html
 
 설치 확인:
 
