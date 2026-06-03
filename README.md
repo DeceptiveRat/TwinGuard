@@ -118,21 +118,7 @@ cd TwinGuard
 
 ---
 
-### 5.2 가상환경 생성 권장
-
-Windows PowerShell 기준:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-```
-
-가상환경이 정상적으로 켜지면 터미널 앞에 `(.venv)`가 표시됩니다.
-
----
-
-### 5.3 필수 Python 패키지 설치
+### 5.2 필수 Python 패키지 설치
 
 ```bash
 python -m pip install flask pyshark pandas numpy scikit-learn joblib
@@ -151,55 +137,7 @@ python -m pip install flask pyshark pandas numpy scikit-learn joblib
 
 ---
 
-## 6. requirements.txt 사용 방법
-
-직접 설치 명령어를 입력하지 않고 `requirements.txt`를 사용할 수도 있습니다.
-
-`requirements.txt` 내용:
-
-```txt
-flask
-pyshark
-pandas
-numpy
-scikit-learn
-joblib
-```
-
-설치 명령어:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
----
-
-## 7. 모델 파일 확인
-
-SVM 실시간 탐지를 위해 아래 모델 파일이 프로젝트 루트에 있어야 합니다.
-
-```text
-evil_twin_detector.pkl
-feature_scaler.pkl
-```
-
-파일이 없으면 `SVM_deploy.py`가 모델 또는 스케일러를 불러오지 못해 탐지가 정상적으로 실행되지 않을 수 있습니다.
-
----
-
-## 8. 실행 방법
-
-기본 실행:
-
-```bash
-python ui.py
-```
-
-실행 후 브라우저에서 아래 주소로 접속합니다.
-
-```text
-http://127.0.0.1:8080
-```
+## 6. 실행 방법
 
 일반적인 사용 순서는 다음과 같습니다.
 
@@ -211,41 +149,7 @@ http://127.0.0.1:8080
 
 ---
 
-## 9. 실행 옵션
-
-### UI만 먼저 열기
-
-```bash
-python ui.py --no-auto-start
-```
-
-### 실행과 동시에 보호 모드 시작
-
-```bash
-python ui.py --auto-start
-```
-
-### 브라우저 자동 열기 없이 실행
-
-```bash
-python ui.py --no-browser
-```
-
-### 웹 UI 포트 변경
-
-```bash
-python ui.py -p 8081
-```
-
-### 네트워크 인터페이스 지정
-
-```bash
-python ui.py -i "Wi-Fi"
-```
-
----
-
-## 10. UI 주요 기능
+## 7. UI 주요 기능
 
 TwinGuard UI는 다음 정보를 제공합니다.
 
@@ -268,6 +172,6 @@ TwinGuard UI는 다음 정보를 제공합니다.
 
 ---
 
-## 11. 테스트 결과 및 현황
+## 8. 테스트 결과 및 현황
 
 진행중
