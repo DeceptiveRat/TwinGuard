@@ -1,4 +1,4 @@
-🛡️# TwinGuard: Local Evil Twin Detection Dashboard🛡️
+# 🛡️TwinGuard: Local Evil Twin Detection Dashboard
 
 > 지금 연결된 Wi-Fi가 정말 안전한지 확인하기 위한 로컬 기반 Evil Twin 탐지 시스템입니다.
 
