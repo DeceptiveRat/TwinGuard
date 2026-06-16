@@ -215,3 +215,6 @@ TwinGuard의 탐지 성능을 확인하기 위해 Confusion Matrix 기반 성능
 
 다만 BSSID 변화가 없고 UDP처럼 RTT 측정이 어려운 경계 상황에서는 일부 탐지 한계가 확인되었습니다.  
 이는 향후 더 다양한 실제 공격 데이터를 수집하고, UDP 환경에서 활용할 수 있는 추가 feature를 도입하여 개선해야 함을 시사합니다.
+
+### 데모 영상
+https://www.youtube.com/watch?v=hrMWLfNtkL8
